@@ -67,6 +67,11 @@
         html.dark .bg-yechan { background-color: rgba(132, 204, 22, 0.15); }
         html.dark .bg-kippeum { background-color: rgba(236, 72, 153, 0.15); }
         html.dark .bg-both { background-color: rgba(245, 158, 11, 0.2); }
+
+        /* DateTime Input Icon Dark Mode Fix */
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; transition: 0.2s; }
+        html.dark input[type="datetime-local"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
     </style>
 </head>
 <body class="antialiased min-h-screen bg-slate-100 dark:bg-black text-slate-800 dark:text-gray-100 flex justify-center transition-colors duration-300">
@@ -264,90 +269,30 @@
         </div>
     </div>
 
-    <!-- Bible Modal -->
-    <div id="bibleModal" class="fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300 px-4">
-        <div class="bg-white dark:bg-[#1e293b] w-full max-w-[440px] max-h-[85vh] rounded-2xl border border-slate-200 dark:border-gray-700 flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="bibleModalContent">
+    <!-- Simulator Controller -->
+    <div id="simulatorPanel" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-slate-200 dark:border-gray-700 p-5 z-50 hidden flex-col gap-4 shadow-[0_-20px_40px_rgba(0,0,0,0.15)] dark:shadow-none rounded-t-3xl pb-safe">
+        <div class="flex justify-between items-center mb-1">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-stopwatch text-amber-500"></i>
+                <span class="text-slate-800 dark:text-white font-bold text-sm">시간 시뮬레이터</span>
+            </div>
+            <button onclick="toggleSimulator()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-gray-800 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <div class="flex flex-col gap-3">
+            <div class="relative flex items-center bg-slate-100 dark:bg-gray-800 rounded-xl border border-slate-200 dark:border-gray-700 overflow-hidden shadow-inner px-2">
+                <div class="pl-2 pr-1 text-slate-400 dark:text-gray-500"><i class="fa-regular fa-calendar-days"></i></div>
+                <input type="datetime-local" id="customTimeInput" class="w-full bg-transparent text-slate-700 dark:text-gray-200 text-[14px] font-medium py-3 pl-1 pr-2 focus:outline-none appearance-none" value="2026-08-14T10:00">
+            </div>
             
-            <!-- Header -->
-            <div class="flex justify-between items-center p-4 border-b border-slate-100 dark:border-gray-700/50 shrink-0">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-book-bible text-amber-500"></i>
-                    <h3 class="text-base font-bold text-slate-900 dark:text-white">열왕기상 18장</h3>
-                    <span class="text-[10px] font-medium bg-slate-100 text-slate-500 dark:bg-gray-800 dark:text-gray-400 px-1.5 py-0.5 rounded">개역개정</span>
-                </div>
-                <button onclick="closeBibleModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-400 hover:text-slate-600 dark:hover:text-white transition-colors">
-                    <i class="fa-solid fa-xmark"></i>
+            <div class="flex gap-2">
+                <button onclick="setMockTime(document.getElementById('customTimeInput').value)" class="flex-1 flex justify-center items-center gap-2 bg-slate-800 text-white dark:bg-amber-600 dark:text-gray-900 font-bold py-3.5 rounded-xl shadow-md active:scale-95 transition-transform text-[13px]">
+                    <i class="fa-solid fa-check"></i>적용하기
+                </button>
+                <button onclick="setMockTime(null)" class="flex-1 flex justify-center items-center gap-2 bg-amber-500 text-white dark:text-gray-900 font-bold py-3.5 rounded-xl shadow-md active:scale-95 transition-transform text-[13px]">
+                    <i class="fa-solid fa-rotate-left"></i>실제 시간
                 </button>
             </div>
-
-            <!-- Content (Scrollable) -->
-            <div class="p-5 overflow-y-auto no-scrollbar flex-1 text-[13.5px] leading-relaxed text-slate-700 dark:text-gray-300 space-y-2.5">
-                <p><sup class="font-bold text-amber-500 mr-0.5">1</sup>많은 날이 지나고 제삼년에 여호와의 말씀이 엘리야에게 임하여 이르시되 너는 가서 아합에게 보이라 내가 비를 지면에 내리리라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">2</sup>엘리야가 아합에게 보이려고 가니 그 때에 사마리아에 기근이 심하였더라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">3</sup>아합이 왕궁 맡은 자 오바댜를 불렀으니 이 오바댜는 여호와를 지극히 경외하는 자라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">4</sup>이세벨이 여호와의 선지자들을 멸할 때에 오바댜가 선지자 백 명을 가지고 오십 명씩 굴에 숨기고 떡과 물을 먹였더라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">5</sup>아합이 오바댜에게 이르되 이 땅의 모든 물 근원과 모든 내로 가자 혹시 꼴을 얻으리라 그리하면 말과 노새를 살리리니 짐승을 다 잃지 않게 되리라 하고</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">6</sup>두 사람이 두루 다닐 땅을 나누어 아합은 홀로 이 길로 가고 오바댜는 홀로 저 길로 가니라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">7</sup>오바댜가 길에 있을 때에 엘리야가 그를 만난지라 그가 알아보고 엎드려 말하되 내 주 엘리야여 당신이시니이까</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">8</sup>그가 그에게 대답하되 그러하다 가서 네 주에게 말하기를 엘리야가 여기 있다 하라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">9</sup>이르되 내가 무슨 죄를 범하였기에 당신이 당신의 종을 아합의 손에 넘겨 죽이게 하려 하시나이까</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">10</sup>당신의 하나님 여호와께서 살아 계심을 두고 맹세하노니 내 주께서 사람을 보내어 당신을 찾지 아니한 족속이나 나라가 없었는데 그들이 말하기를 엘리야가 없다 하면 그 나라와 그 족속으로 당신을 보지 못하였다는 맹세를 하게 하였거늘</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">11</sup>이제 당신의 말씀이 가서 네 주에게 말하기를 엘리야가 여기 있다 하라 하시나</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">12</sup>내가 당신을 떠나간 후에 여호와의 영이 내가 알지 못하는 곳으로 당신을 이끌어 가시리니 내가 가서 아합에게 말하였다가 그가 당신을 찾지 못하면 내가 죽임을 당하리이다 당신의 종은 어려서부터 여호와를 경외하는 자라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">13</sup>이세벨이 여호와의 선지자들을 죽일 때에 내가 여호와의 선지자 중에 백 명을 오십 명씩 굴에 숨기고 떡과 물로 먹인 일이 내 주에게 들리지 아니하였나이까</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">14</sup>이제 당신의 말씀이 가서 네 주에게 말하기를 엘리야가 여기 있다 하라 하시니 그리하면 그가 나를 죽이리이다</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">15</sup>엘리야가 이르되 내가 섬기는 만군의 여호와께서 살아 계심을 두고 맹세하노니 내가 오늘 아합에게 보이리라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">16</sup>오바댜가 가서 아합을 만나 그에게 말하매 아합이 엘리야를 만나러 가다가</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">17</sup>엘리야를 볼 때에 아합이 그에게 이르되 이스라엘을 괴롭게 하는 자여 너냐</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">18</sup>그가 대답하되 내가 이스라엘을 괴롭게 한 것이 아니라 당신과 당신의 아버지의 집이 괴롭게 하였으니 이는 여호와의 명령을 버렸고 당신이 바알들을 따랐음이라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">19</sup>그런즉 사람을 보내 온 이스라엘과 이세벨의 상에서 먹는 바알의 선지자 사백오십 명과 아세라의 선지자 사백 명을 갈멜 산으로 모아 내게로 나아오게 하소서</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">20</sup>아합이 이에 이스라엘의 모든 자손에게로 사람을 보내 선지자들을 갈멜 산으로 모으니라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">21</sup>엘리야가 모든 백성에게 가까이 나아가 이르되 너희가 어느 때까지 둘 사이에서 머뭇머뭇 하려느냐 여호와가 만일 하나님이면 그를 따르고 바알이 만일 하나님이면 그를 따를지니라 하니 백성이 말 한마디도 대답하지 아니하는지라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">22</sup>엘리야가 백성에게 이르되 여호와의 선지자는 나만 홀로 남았으나 바알의 선지자는 사백오십 명이로다</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">23</sup>그런즉 송아지 둘을 우리에게 가져오게 하고 그들은 송아지 한 마리를 택하여 각을 떠서 나무 위에 놓고 불은 붙이지 말며 나도 송아지 한 마리를 잡아 나무 위에 놓고 불은 붙이지 않고</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">24</sup>너희는 너희 신의 이름을 부르라 나는 여호와의 이름을 부르리니 이에 불로 응답하는 신 그가 하나님이니라 백성이 다 대답하되 그 말이 옳도다 하니라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">25</sup>엘리야가 바알의 선지자들에게 이르되 너희는 많으니 먼저 송아지 한 마리를 택하여 잡고 너희 신의 이름을 부르라 그러나 불을 붙이지 말라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">26</sup>그들이 받은 송아지를 가져다가 잡고 아침부터 낮까지 바알의 이름을 불러 이르되 바알이여 우리에게 응답하소서 하나 아무 소리도 없고 아무 응답하는 자도 없으므로 그들이 그 쌓은 제단 주위에서 뛰놀더라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">27</sup>정오에 이르러는 엘리야가 그들을 조롱하여 이르되 큰 소리로 부르라 그는 신인즉 묵상하고 있는지 혹은 그가 잠깐 나갔는지 혹은 그가 길을 행하는지 혹은 그가 잠이 들어서 깨워야 할 것인지 하매</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">28</sup>이에 그들이 큰 소리로 부르고 그들의 규례를 따라 피가 흐르기까지 칼과 창으로 그들의 몸을 상하게 하더라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">29</sup>이같이 하여 정오가 지났고 그들이 미친 듯이 떠들어 저녁 소제 드릴 때까지 이르렀으나 아무 소리도 없고 응답하는 자나 돌아보는 자가 아무도 없더라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">30</sup>엘리야가 모든 백성을 향하여 이르되 내게로 가까이 오라 백성이 다 그에게 가까이 가매 그가 무너진 여호와의 제단을 수축하되</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">31</sup>야곱의 아들들의 지파의 수효를 따라 엘리야가 돌 열두 개를 취하니 이 야곱은 옛적에 여호와의 말씀이 임하여 이르시기를 네 이름을 이스라엘이라 하리라 하신 자더라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">32</sup>그가 여호와의 이름을 의지하여 그 돌로 제단을 쌓고 제단을 돌아가며 곡식 종자 두 세아를 둘 만한 도랑을 만들고</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">33</sup>또 나무를 벌이고 송아지의 각을 떠서 나무 위에 놓고 이르되 통 넷에 물을 채워다가 번제물과 나무 위에 부으라 하고</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">34</sup>또 이르되 다시 그리하라 하여 다시 그리하니 또 이르되 세 번째로 그리하라 하여 세 번째로 그리하니</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">35</sup>물이 제단으로 두루 흐르고 도랑에도 물이 가득 찼더라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">36</sup>저녁 소제 드릴 때에 이르러 선지자 엘리야가 나아가서 말하되 아브라함과 이삭과 이스라엘의 하나님 여호와여 주께서 이스라엘 중에서 하나님이신 것과 내가 주의 종인 것과 내가 주의 말씀대로 이 모든 일을 행하는 것을 오늘 알게 하옵소서</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">37</sup>여호와여 내게 응답하옵소서 내게 응답하옵소서 이 백성에게 주 여호와는 하나님이신 것과 주는 그들의 마음을 되돌이키심을 알게 하옵소서 하매</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">38</sup>이에 여호와의 불이 내려서 번제물과 나무와 돌과 흙을 태우고 또 도랑의 물을 핥은지라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">39</sup>모든 백성이 보고 엎드려 말하되 여호와 그는 하나님이시로다 여호와 그는 하나님이시로다 하니</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">40</sup>엘리야가 그들에게 이르되 바알의 선지자를 잡되 그들 중 하나도 도망하지 못하게 하라 하매 곧 잡은지라 엘리야가 그들을 기손 시내로 내려다가 거기서 죽이니라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">41</sup>엘리야가 아합에게 이르되 올라가서 먹고 마시소서 큰 비 소리가 있나이다</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">42</sup>아합이 먹고 마시러 올라가니라 엘리야가 갈멜 산 꼭대기로 올라가서 땅에 꿇어 엎드려 그의 얼굴을 무릎 사이에 넣고</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">43</sup>그의 사환에게 이르되 올라가 바다 쪽을 바라보라 그가 올라가 바라보고 말하되 아무것도 없나이다 이르되 일곱 번까지 다시 가라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">44</sup>일곱 번째 이르러서는 그가 말하되 바다에서 사람의 손 만한 작은 구름이 일어나나이다 이르되 올라가 아합에게 말하기를 비에 막히지 아니하도록 마차를 갖추고 내려가소서 하라 하니라</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">45</sup>조금 후에 구름과 바람이 일어나서 하늘이 캄캄해지며 큰 비가 내리는지라 아합이 마차를 타고 이스르엘로 가니</p>
-                <p><sup class="font-bold text-amber-500 mr-0.5">46</sup>여호와의 능력이 엘리야에게 임하매 그가 허리를 동이고 이스르엘로 들어가는 곳까지 아합 앞에서 달려갔더라</p>
-            </div>
-            
-            <!-- Footer -->
-            <div class="p-4 border-t border-slate-100 dark:border-gray-700/50 shrink-0">
-                 <button onclick="closeBibleModal()" class="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-gray-800 text-slate-600 dark:text-white font-bold hover:bg-slate-200 dark:hover:bg-gray-700 transition-colors">닫기</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Simulator Controller -->
-    <div id="simulatorPanel" class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-slate-200 dark:border-gray-700 p-4 z-50 hidden flex-col gap-3 shadow-[0_-10px_20px_rgba(0,0,0,0.1)] dark:shadow-none">
-        <div class="flex justify-between items-center text-sm">
-            <span class="text-amber-500 font-bold">시간 시뮬레이터</span>
-            <button onclick="toggleSimulator()" class="text-slate-400"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="flex gap-2 text-[10px] sm:text-xs">
-            <button onclick="setMockTime('2026-08-14T10:00:00')" class="bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-gray-300 p-2 rounded">14일 10시</button>
-            <button onclick="setMockTime('2026-08-15T16:30:00')" class="bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-gray-300 p-2 rounded">15일 16:30</button>
-            <button onclick="setMockTime('2026-08-16T19:30:00')" class="bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-gray-300 p-2 rounded">16일 19:30</button>
-            <button onclick="setMockTime(null)" class="bg-amber-500 text-white dark:text-gray-900 font-bold p-2 rounded">실제 시간</button>
         </div>
     </div>
 
@@ -974,12 +919,32 @@
             panel.classList.toggle('flex');
         }
 
+        function applyCustomTime() {
+            const inputVal = document.getElementById('customTimeInput').value;
+            if (inputVal) {
+                setMockTime(inputVal);
+            }
+        }
+
         function setMockTime(isoString) {
             mockDateTime = isoString;
+            
+            // 사용자가 빠른 선택 버튼을 눌렀을 때 입력창 값도 동기화
+            if (isoString) {
+                const inputEl = document.getElementById('customTimeInput');
+                inputEl.value = isoString.length > 16 ? isoString.substring(0, 16) : isoString;
+            }
+
             updateCurrentStatus();
             if (isoString && (currentView === 'card' || currentView === 'table')) {
                 const d = new Date(isoString);
-                const todayStr = d.toISOString().split('T')[0];
+                
+                // 한국 시간(Local) 기준으로 날짜를 구해서 탭 이동 버그 방지
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                const todayStr = `${year}-${month}-${day}`;
+                
                 const foundDay = scheduleData.find(day => day.date === todayStr);
                 if(foundDay && foundDay.id !== currentActiveDay && currentView === 'card') {
                     currentActiveDay = foundDay.id;
