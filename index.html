@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>David Tent Schedule - 예찬 & 기쁨</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/variable/pretendardvariable.css" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Pretendard Variable', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+        
+        // Prevent FOUC: Apply dark mode immediately. (기본값을 다크모드로 변경)
+        if (localStorage.getItem('color-theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    
+    <style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Custom Scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Smooth Tab Transition */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
+
+        /* Bottom padding for mobile */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+
+        /* Table Highlight Colors */
+        /* Light Mode */
+        .bg-yechan { background-color: rgba(132, 204, 22, 0.12); } 
+        .bg-kippeum { background-color: rgba(236, 72, 153, 0.12); } 
+        .bg-both { background-color: rgba(245, 158, 11, 0.15); } 
+        
+        /* Dark Mode Table Highlight Colors overrides via classes in JS */
+        html.dark .bg-yechan { background-color: rgba(132, 204, 22, 0.15); }
+        html.dark .bg-kippeum { background-color: rgba(236, 72, 153, 0.15); }
+        html.dark .bg-both { background-color: rgba(245, 158, 11, 0.2); }
+    </style>
+</head>
+<body class="antialiased min-h-screen bg-slate-100 dark:bg-black text-slate-800 dark:text-gray-100 flex justify-center transition-colors duration-300">
+
+    <!-- Mobile App Wrapper -->
+    <div class="w-full max-w-[480px] bg-slate-50 dark:bg-[#020617] min-h-screen relative flex flex-col shadow-2xl overflow-hidden pb-24 border-x border-slate-200 dark:border-gray-800/50 transition-colors duration-300">
+
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-gray-800 transition-colors">
+        <div class="flex justify-between items-center px-5 py-4">
+            <div class="flex flex-col">
+                <div class="flex items-center gap-2 mb-1 cursor-pointer group" onclick="openBibleModal()">
+                    <div class="w-1 h-3 bg-amber-500 rounded-full shadow-[0_0_8px_rgba(245,158,11,0.5)] group-hover:bg-amber-400 transition-colors"></div>
+                    <span class="text-[10px] font-bold tracking-widest text-slate-500 dark:text-amber-500/90 uppercase group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors flex items-center gap-1">
+                        주제: 열왕기상 18장 <i class="fa-solid fa-book-open text-[9px] opacity-70 mb-0.5"></i>
+                    </span>
+                </div>
+                <h1 class="text-[20px] font-extrabold tracking-tight text-slate-900 dark:text-white">
+                    David Tent <span class="text-amber-500 font-light">Schedule</span>
+                </h1>
+            </div>
+            
+            <div class="flex gap-2">
+                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-full bg-slate-100 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-600 dark:text-amber-500 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-gray-700 active:scale-95 transition-all shadow-sm">
+                    <i id="themeToggleIcon" class="fa-solid fa-moon"></i>
+                </button>
+                <a href="https://www.davidstent.co.kr/" target="_blank" rel="noopener noreferrer" 
+                   class="w-9 h-9 rounded-full bg-slate-100 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-600 dark:text-amber-500 flex items-center justify-center hover:bg-slate-200 dark:hover:bg-gray-700 active:scale-95 transition-all shadow-sm">
+                    <i class="fa-solid fa-globe"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Tabs (Updated to fit in one line) -->
+        <div class="flex px-2 pb-3 gap-1 items-center justify-between w-full" id="dayTabs">
+            <!-- Tabs injected by JS -->
+        </div>
+    </header>
+
+    <!-- Current Status Dashboard -->
+    <div class="px-4 py-3" id="dashboardContainer">
+        <div class="bg-white dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-900 rounded-2xl p-3 shadow-md border border-slate-200 dark:border-gray-700 relative overflow-hidden transition-colors">
+            
+            <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1.5">
+                        <span class="relative flex h-2 w-2" id="dashPingIndicator">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                        </span>
+                        <h2 class="text-[11px] font-bold text-amber-600 dark:text-amber-400" id="dashTimeContext">현재 진행중</h2>
+                    </div>
+                    <div class="text-[10px] text-slate-400 dark:text-gray-400 font-mono" id="dashCurrentTime">08/14 14:30</div>
+                </div>
+                <!-- Time Simulator Toggle -->
+                <button onclick="toggleSimulator()" class="text-[9px] text-slate-400 dark:text-gray-500 px-2 py-0.5 rounded bg-slate-100 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 transition-colors">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Test
+                </button>
+            </div>
+            
+            <div class="flex justify-between items-center mb-3">
+                <div class="w-[58%]">
+                    <div id="dashEventTitle" class="text-[15px] font-bold text-slate-900 dark:text-white mb-0.5 truncate leading-tight">이벤트 로딩중...</div>
+                    <div id="dashEventLeader" class="text-[11px] text-slate-500 dark:text-gray-400 truncate">강사/인도자</div>
+                </div>
+                
+                <div class="w-[40%] grid grid-cols-2 gap-1.5">
+                    <!-- Yechan Dashboard Box -->
+                    <div class="rounded-lg py-1 px-1 flex flex-col justify-center items-center border border-slate-200 bg-slate-50 dark:border-gray-700 dark:bg-black/30 transition-colors">
+                        <span class="text-[9px] text-slate-400 dark:text-gray-400 mb-0.5">👨 예찬</span>
+                        <span id="dashYechanRole" class="text-[11px] font-bold text-slate-400 dark:text-gray-500">-</span>
+                    </div>
+                    <!-- Kippeum Dashboard Box -->
+                    <div class="rounded-lg py-1 px-1 flex flex-col justify-center items-center border border-slate-200 bg-slate-50 dark:border-gray-700 dark:bg-black/30 transition-colors">
+                        <span class="text-[9px] text-slate-400 dark:text-gray-400 mb-0.5">👩 기쁨</span>
+                        <span id="dashKippeumRole" class="text-[11px] font-bold text-slate-400 dark:text-gray-500">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Event Strip -->
+            <div class="flex justify-between items-center bg-slate-50 dark:bg-gray-900/60 rounded-lg px-2.5 py-1.5 border border-slate-100 dark:border-gray-700/50 transition-colors">
+                <div class="flex items-center gap-2 overflow-hidden">
+                    <div class="text-[9px] bg-slate-200 text-slate-600 dark:bg-amber-500/20 dark:text-amber-400 px-1.5 py-0.5 rounded font-bold shrink-0">NEXT</div>
+                    <div id="dashNextEvent" class="text-[11px] text-slate-600 dark:text-gray-300 font-medium truncate">다음 일정</div>
+                </div>
+                <div id="dashNextTime" class="text-[10px] font-mono font-medium text-slate-400 dark:text-gray-500 shrink-0 ml-2">00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar for Daily View -->
+    <div class="px-4 py-1.5 flex gap-2 overflow-x-auto no-scrollbar hidden" id="filterBar">
+        <button onclick="setFilter('all')" id="filter-all" class="filter-btn px-4 py-1.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap">전체</button>
+        <button onclick="setFilter('yechan')" id="filter-yechan" class="filter-btn px-4 py-1.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap">예찬</button>
+        <button onclick="setFilter('kippeum')" id="filter-kippeum" class="filter-btn px-4 py-1.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap">기쁨</button>
+        <button onclick="setFilter('together')" id="filter-together" class="filter-btn px-4 py-1.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap">함께</button>
+    </div>
+
+    <!-- Table View Legend -->
+    <div id="tableLegendContainer" class="hidden px-4 py-2 flex justify-end items-center border-b border-slate-200 dark:border-gray-800/50 bg-slate-50 dark:bg-gray-900/30 transition-colors">
+        <div id="table-legend" class="flex gap-3 text-[10px] font-medium text-slate-500 dark:text-gray-400">
+            <span class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-amber-400 rounded-sm"></div>함께</span>
+            <span class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-lime-400 rounded-sm"></div>예찬</span>
+            <span class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-pink-400 rounded-sm"></div>기쁨</span>
+        </div>
+    </div>
+
+    <!-- Card Schedule Area -->
+    <main class="flex-1 px-4 py-4 overflow-y-auto no-scrollbar relative fade-in hidden" id="scheduleContainer"></main>
+
+    <!-- Table View Area -->
+    <main class="flex-1 px-2 py-4 overflow-y-auto hidden no-scrollbar relative fade-in" id="tableContainer"></main>
+
+    <!-- Electives (선택 강의) Area -->
+    <main class="flex-1 px-4 py-4 overflow-y-auto hidden no-scrollbar relative fade-in" id="electivesContainer">
+        <!-- Injected via JS -->
+    </main>
+
+    <div id="editModal" class="fixed inset-0 bg-slate-900/40 dark:bg-black/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-[#1e293b] w-full sm:w-[400px] rounded-t-3xl sm:rounded-3xl border-t border-slate-200 dark:border-gray-700 sm:border p-6 pb-safe transform translate-y-full sm:translate-y-0 transition-transform duration-300" id="editModalContent">
+            
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">일정 역할 배정</h3>
+                    <p class="text-sm text-slate-500 dark:text-gray-400" id="modalEventTitle">이벤트 제목</p>
+                    <p class="text-xs text-amber-500 mt-1" id="modalEventTime">00:00 ~ 00:00</p>
+                </div>
+                <button onclick="closeModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-400 hover:text-slate-600 dark:hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Yechan Select -->
+            <div class="mb-5">
+                <label class="block text-sm font-bold text-lime-600 dark:text-lime-400 mb-2">👨 예찬 역할</label>
+                <div class="grid grid-cols-5 gap-2">
+                    <label class="role-radio">
+                        <input type="radio" name="yechanRole" value="none" class="hidden peer">
+                        <div class="peer-checked:bg-slate-700 peer-checked:text-white dark:peer-checked:bg-gray-600 bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-400 dark:text-gray-400 text-xs py-2 text-center rounded-lg cursor-pointer transition-all">없음</div>
+                    </label>
+                    <label class="role-radio">
+                        <input type="radio" name="yechanRole" value="subtitle" class="hidden peer">
+                        <div class="peer-checked:bg-lime-500 peer-checked:text-white peer-checked:border-lime-500 bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-400 dark:text-gray-400 text-xs py-2 text-center rounded-lg cursor-pointer transition-all">자막</div>
+                    </label>
+                    <label class="role-radio">
+                        <input type="radio" name="yechanRole" value="chat" class="hidden peer">
+                        <div class="peer-checked:bg-lime-500 peer-checked:text-white peer-checked:border-lime-500 bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-400 dark:text-gray-400 text-xs py-2 text-center rounded-lg cursor-pointer transition-all">채팅</div>
+                    </label>
+                    <label class="role-radio">
+                        <input type="radio" name="yechanRole" value="singer" class="hidden peer">
+                        <div class="peer-checked:bg-lime-500 peer-checked:text-white peer-checked:border-lime-500 bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-400 dark:text-gray-400 text-xs py-2 text-center rounded-lg cursor-pointer transition-all">싱어</div>
+                    </label>
+                    <label class="role-radio">
+                        <input type="radio" name="yechanRole" value="keyboard" class="hidden peer">
+                        <div class="peer-checked:bg-lime-500 peer-checked:text-white peer-checked:border-lime-500 bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-400 dark:text-gray-400 text-xs py-2 text-center rounded-lg cursor-pointer transition-all">건반</div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Kippeum Select -->
+            <div class="mb-8">
+                <label class="block text-sm font-bold text-pink-600 dark:text-pink-400 mb-2">👩 기쁨 역할</label>
+                <div class="grid grid-cols-5 gap-2">
+                    <label class="role-radio">
+                        <input type="radio" name="kippeumRole" value="none" class="hidden peer">
+                        <div class="peer-checked:bg-slate-700 peer-checked:text-white dark:peer-checked:bg-gray-600 bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-400 dark:text-gray-400 text-xs py-2 text-center rounded-lg cursor-pointer transition-all">없음</div>
+                    </label>
+                    <label class="role-radio">
+                        <input type="radio" name="kippeumRole" value="subtitle" class="hidden peer">
+                        <div class="peer-checked:bg-pink-500 peer-checked:text-white peer-checked:border-pink-500 bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-400 dark:text-gray-400 text-xs py-2 text-center rounded-lg cursor-pointer transition-all">자막</div>
+                    </label>
+                    <label class="role-radio">
+                        <input type="radio" name="kippeumRole" value="chat" class="hidden peer">
+                        <div class="peer-checked:bg-pink-500 peer-checked:text-white peer-checked:border-pink-500 bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-400 dark:text-gray-400 text-xs py-2 text-center rounded-lg cursor-pointer transition-all">채팅</div>
+                    </label>
+                    <label class="role-radio">
+                        <input type="radio" name="kippeumRole" value="singer" class="hidden peer">
+                        <div class="peer-checked:bg-pink-500 peer-checked:text-white peer-checked:border-pink-500 bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-400 dark:text-gray-400 text-xs py-2 text-center rounded-lg cursor-pointer transition-all">싱어</div>
+                    </label>
+                    <label class="role-radio">
+                        <input type="radio" name="kippeumRole" value="keyboard" class="hidden peer">
+                        <div class="peer-checked:bg-pink-500 peer-checked:text-white peer-checked:border-pink-500 bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 text-slate-400 dark:text-gray-400 text-xs py-2 text-center rounded-lg cursor-pointer transition-all">건반</div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-3">
+                <button onclick="closeModal()" class="flex-1 py-3 rounded-xl bg-slate-100 dark:bg-gray-800 text-slate-600 dark:text-white font-bold border border-slate-200 dark:border-gray-700 active:bg-slate-200 transition-colors">취소</button>
+                <button onclick="saveAssignment()" class="flex-1 py-3 rounded-xl bg-slate-800 text-white dark:bg-gradient-to-r dark:from-amber-500 dark:to-amber-600 dark:text-gray-900 font-bold shadow-md active:scale-95 transition-transform">저장하기</button>
+            </div>
+            
+            <input type="hidden" id="modalDayId">
+            <input type="hidden" id="modalEventId">
+        </div>
+    </div>
+
+    <!-- Bible Modal -->
+    <div id="bibleModal" class="fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300 px-4">
+        <div class="bg-white dark:bg-[#1e293b] w-full max-w-[440px] max-h-[85vh] rounded-2xl border border-slate-200 dark:border-gray-700 flex flex-col shadow-2xl transform scale-95 transition-transform duration-300" id="bibleModalContent">
+            
+            <!-- Header -->
+            <div class="flex justify-between items-center p-4 border-b border-slate-100 dark:border-gray-700/50 shrink-0">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-book-bible text-amber-500"></i>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white">열왕기상 18장</h3>
+                    <span class="text-[10px] font-medium bg-slate-100 text-slate-500 dark:bg-gray-800 dark:text-gray-400 px-1.5 py-0.5 rounded">개역개정</span>
+                </div>
+                <button onclick="closeBibleModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 dark:bg-gray-800 text-slate-400 dark:text-gray-400 hover:text-slate-600 dark:hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Content (Scrollable) -->
+            <div class="p-5 overflow-y-auto no-scrollbar flex-1 text-[13.5px] leading-relaxed text-slate-700 dark:text-gray-300 space-y-2.5">
+                <p><sup class="font-bold text-amber-500 mr-0.5">1</sup>많은 날이 지나고 제삼년에 여호와의 말씀이 엘리야에게 임하여 이르시되 너는 가서 아합에게 보이라 내가 비를 지면에 내리리라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">2</sup>엘리야가 아합에게 보이려고 가니 그 때에 사마리아에 기근이 심하였더라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">3</sup>아합이 왕궁 맡은 자 오바댜를 불렀으니 이 오바댜는 여호와를 지극히 경외하는 자라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">4</sup>이세벨이 여호와의 선지자들을 멸할 때에 오바댜가 선지자 백 명을 가지고 오십 명씩 굴에 숨기고 떡과 물을 먹였더라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">5</sup>아합이 오바댜에게 이르되 이 땅의 모든 물 근원과 모든 내로 가자 혹시 꼴을 얻으리라 그리하면 말과 노새를 살리리니 짐승을 다 잃지 않게 되리라 하고</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">6</sup>두 사람이 두루 다닐 땅을 나누어 아합은 홀로 이 길로 가고 오바댜는 홀로 저 길로 가니라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">7</sup>오바댜가 길에 있을 때에 엘리야가 그를 만난지라 그가 알아보고 엎드려 말하되 내 주 엘리야여 당신이시니이까</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">8</sup>그가 그에게 대답하되 그러하다 가서 네 주에게 말하기를 엘리야가 여기 있다 하라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">9</sup>이르되 내가 무슨 죄를 범하였기에 당신이 당신의 종을 아합의 손에 넘겨 죽이게 하려 하시나이까</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">10</sup>당신의 하나님 여호와께서 살아 계심을 두고 맹세하노니 내 주께서 사람을 보내어 당신을 찾지 아니한 족속이나 나라가 없었는데 그들이 말하기를 엘리야가 없다 하면 그 나라와 그 족속으로 당신을 보지 못하였다는 맹세를 하게 하였거늘</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">11</sup>이제 당신의 말씀이 가서 네 주에게 말하기를 엘리야가 여기 있다 하라 하시나</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">12</sup>내가 당신을 떠나간 후에 여호와의 영이 내가 알지 못하는 곳으로 당신을 이끌어 가시리니 내가 가서 아합에게 말하였다가 그가 당신을 찾지 못하면 내가 죽임을 당하리이다 당신의 종은 어려서부터 여호와를 경외하는 자라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">13</sup>이세벨이 여호와의 선지자들을 죽일 때에 내가 여호와의 선지자 중에 백 명을 오십 명씩 굴에 숨기고 떡과 물로 먹인 일이 내 주에게 들리지 아니하였나이까</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">14</sup>이제 당신의 말씀이 가서 네 주에게 말하기를 엘리야가 여기 있다 하라 하시니 그리하면 그가 나를 죽이리이다</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">15</sup>엘리야가 이르되 내가 섬기는 만군의 여호와께서 살아 계심을 두고 맹세하노니 내가 오늘 아합에게 보이리라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">16</sup>오바댜가 가서 아합을 만나 그에게 말하매 아합이 엘리야를 만나러 가다가</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">17</sup>엘리야를 볼 때에 아합이 그에게 이르되 이스라엘을 괴롭게 하는 자여 너냐</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">18</sup>그가 대답하되 내가 이스라엘을 괴롭게 한 것이 아니라 당신과 당신의 아버지의 집이 괴롭게 하였으니 이는 여호와의 명령을 버렸고 당신이 바알들을 따랐음이라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">19</sup>그런즉 사람을 보내 온 이스라엘과 이세벨의 상에서 먹는 바알의 선지자 사백오십 명과 아세라의 선지자 사백 명을 갈멜 산으로 모아 내게로 나아오게 하소서</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">20</sup>아합이 이에 이스라엘의 모든 자손에게로 사람을 보내 선지자들을 갈멜 산으로 모으니라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">21</sup>엘리야가 모든 백성에게 가까이 나아가 이르되 너희가 어느 때까지 둘 사이에서 머뭇머뭇 하려느냐 여호와가 만일 하나님이면 그를 따르고 바알이 만일 하나님이면 그를 따를지니라 하니 백성이 말 한마디도 대답하지 아니하는지라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">22</sup>엘리야가 백성에게 이르되 여호와의 선지자는 나만 홀로 남았으나 바알의 선지자는 사백오십 명이로다</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">23</sup>그런즉 송아지 둘을 우리에게 가져오게 하고 그들은 송아지 한 마리를 택하여 각을 떠서 나무 위에 놓고 불은 붙이지 말며 나도 송아지 한 마리를 잡아 나무 위에 놓고 불은 붙이지 않고</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">24</sup>너희는 너희 신의 이름을 부르라 나는 여호와의 이름을 부르리니 이에 불로 응답하는 신 그가 하나님이니라 백성이 다 대답하되 그 말이 옳도다 하니라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">25</sup>엘리야가 바알의 선지자들에게 이르되 너희는 많으니 먼저 송아지 한 마리를 택하여 잡고 너희 신의 이름을 부르라 그러나 불을 붙이지 말라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">26</sup>그들이 받은 송아지를 가져다가 잡고 아침부터 낮까지 바알의 이름을 불러 이르되 바알이여 우리에게 응답하소서 하나 아무 소리도 없고 아무 응답하는 자도 없으므로 그들이 그 쌓은 제단 주위에서 뛰놀더라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">27</sup>정오에 이르러는 엘리야가 그들을 조롱하여 이르되 큰 소리로 부르라 그는 신인즉 묵상하고 있는지 혹은 그가 잠깐 나갔는지 혹은 그가 길을 행하는지 혹은 그가 잠이 들어서 깨워야 할 것인지 하매</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">28</sup>이에 그들이 큰 소리로 부르고 그들의 규례를 따라 피가 흐르기까지 칼과 창으로 그들의 몸을 상하게 하더라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">29</sup>이같이 하여 정오가 지났고 그들이 미친 듯이 떠들어 저녁 소제 드릴 때까지 이르렀으나 아무 소리도 없고 응답하는 자나 돌아보는 자가 아무도 없더라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">30</sup>엘리야가 모든 백성을 향하여 이르되 내게로 가까이 오라 백성이 다 그에게 가까이 가매 그가 무너진 여호와의 제단을 수축하되</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">31</sup>야곱의 아들들의 지파의 수효를 따라 엘리야가 돌 열두 개를 취하니 이 야곱은 옛적에 여호와의 말씀이 임하여 이르시기를 네 이름을 이스라엘이라 하리라 하신 자더라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">32</sup>그가 여호와의 이름을 의지하여 그 돌로 제단을 쌓고 제단을 돌아가며 곡식 종자 두 세아를 둘 만한 도랑을 만들고</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">33</sup>또 나무를 벌이고 송아지의 각을 떠서 나무 위에 놓고 이르되 통 넷에 물을 채워다가 번제물과 나무 위에 부으라 하고</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">34</sup>또 이르되 다시 그리하라 하여 다시 그리하니 또 이르되 세 번째로 그리하라 하여 세 번째로 그리하니</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">35</sup>물이 제단으로 두루 흐르고 도랑에도 물이 가득 찼더라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">36</sup>저녁 소제 드릴 때에 이르러 선지자 엘리야가 나아가서 말하되 아브라함과 이삭과 이스라엘의 하나님 여호와여 주께서 이스라엘 중에서 하나님이신 것과 내가 주의 종인 것과 내가 주의 말씀대로 이 모든 일을 행하는 것을 오늘 알게 하옵소서</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">37</sup>여호와여 내게 응답하옵소서 내게 응답하옵소서 이 백성에게 주 여호와는 하나님이신 것과 주는 그들의 마음을 되돌이키심을 알게 하옵소서 하매</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">38</sup>이에 여호와의 불이 내려서 번제물과 나무와 돌과 흙을 태우고 또 도랑의 물을 핥은지라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">39</sup>모든 백성이 보고 엎드려 말하되 여호와 그는 하나님이시로다 여호와 그는 하나님이시로다 하니</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">40</sup>엘리야가 그들에게 이르되 바알의 선지자를 잡되 그들 중 하나도 도망하지 못하게 하라 하매 곧 잡은지라 엘리야가 그들을 기손 시내로 내려다가 거기서 죽이니라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">41</sup>엘리야가 아합에게 이르되 올라가서 먹고 마시소서 큰 비 소리가 있나이다</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">42</sup>아합이 먹고 마시러 올라가니라 엘리야가 갈멜 산 꼭대기로 올라가서 땅에 꿇어 엎드려 그의 얼굴을 무릎 사이에 넣고</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">43</sup>그의 사환에게 이르되 올라가 바다 쪽을 바라보라 그가 올라가 바라보고 말하되 아무것도 없나이다 이르되 일곱 번까지 다시 가라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">44</sup>일곱 번째 이르러서는 그가 말하되 바다에서 사람의 손 만한 작은 구름이 일어나나이다 이르되 올라가 아합에게 말하기를 비에 막히지 아니하도록 마차를 갖추고 내려가소서 하라 하니라</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">45</sup>조금 후에 구름과 바람이 일어나서 하늘이 캄캄해지며 큰 비가 내리는지라 아합이 마차를 타고 이스르엘로 가니</p>
+                <p><sup class="font-bold text-amber-500 mr-0.5">46</sup>여호와의 능력이 엘리야에게 임하매 그가 허리를 동이고 이스르엘로 들어가는 곳까지 아합 앞에서 달려갔더라</p>
+            </div>
+            
+            <!-- Footer -->
+            <div class="p-4 border-t border-slate-100 dark:border-gray-700/50 shrink-0">
+                 <button onclick="closeBibleModal()" class="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-gray-800 text-slate-600 dark:text-white font-bold hover:bg-slate-200 dark:hover:bg-gray-700 transition-colors">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simulator Controller -->
+    <div id="simulatorPanel" class="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-slate-200 dark:border-gray-700 p-4 z-50 hidden flex-col gap-3 shadow-[0_-10px_20px_rgba(0,0,0,0.1)] dark:shadow-none">
+        <div class="flex justify-between items-center text-sm">
+            <span class="text-amber-500 font-bold">시간 시뮬레이터</span>
+            <button onclick="toggleSimulator()" class="text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="flex gap-2 text-[10px] sm:text-xs">
+            <button onclick="setMockTime('2026-08-14T10:00:00')" class="bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-gray-300 p-2 rounded">14일 10시</button>
+            <button onclick="setMockTime('2026-08-15T16:30:00')" class="bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-gray-300 p-2 rounded">15일 16:30</button>
+            <button onclick="setMockTime('2026-08-16T19:30:00')" class="bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-gray-300 p-2 rounded">16일 19:30</button>
+            <button onclick="setMockTime(null)" class="bg-amber-500 text-white dark:text-gray-900 font-bold p-2 rounded">실제 시간</button>
+        </div>
+    </div>
+
+    </div> <!-- End of App Wrapper -->
+
+    <script>
+        // Data Mappings
+        const roleMap = {
+            'none': { label: '-' },
+            'subtitle': { label: '자막' },
+            'chat': { label: '채팅' },
+            'singer': { label: '싱어' },
+            'keyboard': { label: '건반' }
+        };
+
+        // Static Data for Electives (선택 강의)
+        const electivesData = [
+            {
+                dateStr: '8/15(토) 14:00 ~ 16:00',
+                classes: [
+                    { room: '사랑의집 중앙홀 1', title: '기도의집 예배 신학과 영성', speaker: '김인기 수련목사' },
+                    { room: '사랑의집 중앙홀 2', title: '중보기도', speaker: '이드보라 선교사' }
+                ]
+            },
+            {
+                dateStr: '8/15(토) 16:00 ~ 18:00',
+                classes: [
+                    { room: '사랑의집 중앙홀 1', title: '기도의 집과 기도실 운영', speaker: '신동철 목사' },
+                    { room: '사랑의집 중앙홀 2', title: '기도의 집 중심의 비지니스', speaker: '이준희 대표' }
+                ]
+            },
+            {
+                dateStr: '8/16(일) 15:00 ~ 17:00',
+                classes: [
+                    { room: '사랑의집 중앙홀 1', title: '행복한 부부 세미나', speaker: '이희범 목사' },
+                    { room: '사랑의집 중앙홀 2', title: 'AI 시대 다음세대 교육', speaker: '송영광 대표' }
+                ]
+            }
+        ];
+
+        const initialSchedule = [
+            {
+                id: 'day1', date: '2026-08-14', title: '8/14(금)', theme: '수축 (순종의 제단 쌓기)',
+                events: [
+                    { id: '1-1', start: '10:00', end: '10:30', title: '스텝 대성전 집합', leader: '전체', section: 2, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '1-2', start: '14:00', end: '16:00', title: '말씀예배', leader: '조미선', section: 3, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '1-3', start: '16:00', end: '18:00', title: 'Harp&Bowl', leader: '신동철', section: 3, yechan: 'chat', kippeum: 'keyboard', note: '' },
+                    { id: '1-4', start: '18:00', end: '19:00', title: '디보션', leader: '정예은, 한정훈', section: 4, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '1-5', start: '19:00', end: '21:00', title: '집회 1', leader: '이득진 목사 (레비)', section: 4, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '1-6', start: '21:00', end: '22:00', title: '많은 물소리', leader: '전체', section: 4, yechan: 'chat', kippeum: 'none', note: '' },
+                    { id: '1-7', start: '22:00', end: '24:00', title: '프리스타일', leader: '원신호', section: 4, yechan: 'chat', kippeum: 'none', note: '' }
+                ]
+            },
+            {
+                id: 'day2', date: '2026-08-15', title: '8/15(토)', theme: '제물 (예언적 행위와 드림)',
+                events: [
+                    { id: '2-1', start: '00:00', end: '02:00', title: '중보예배', leader: '울산TCC', section: 1, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '2-2', start: '02:00', end: '03:00', title: '팀디보', leader: '류노아', section: 1, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '2-3', start: '03:00', end: '05:00', title: 'Harp&Bowl', leader: '강연서', section: 1, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '2-4', start: '05:00', end: '06:00', title: '집회 2', leader: '김모세 목사', section: 1, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '2-5', start: '06:00', end: '08:00', title: '말씀예배', leader: '장아름', section: 2, yechan: 'subtitle', kippeum: 'none', note: '' },
+                    { id: '2-6', start: '08:00', end: '09:00', title: '디보션', leader: '김나율', section: 2, yechan: 'subtitle', kippeum: 'none', note: '' },
+                    { id: '2-7', start: '09:00', end: '11:00', title: '집회 3', leader: '이성희 변호사 (김인기)', section: 2, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '2-8', start: '11:00', end: '12:00', title: '많은 물소리', leader: '전체', section: 2, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '2-9', start: '12:00', end: '14:00', title: '중보예배', leader: '정예은', section: 3, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '2-10', start: '14:00', end: '16:00', title: '말씀예배', leader: '레비', section: 3, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '2-11', start: '16:00', end: '18:00', title: 'Harp&Bowl', leader: '이상', section: 3, yechan: 'singer', kippeum: 'keyboard', note: '' },
+                    { id: '2-12', start: '18:00', end: '19:00', title: '디보션', leader: '김인기', section: 4, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '2-13', start: '19:00', end: '21:00', title: '집회 4', leader: '박호종 목사 (원신호)', section: 4, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '2-14', start: '21:00', end: '22:00', title: '많은 물소리', leader: '전체', section: 4, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '2-15', start: '22:00', end: '24:00', title: '프리스타일', leader: '김인기', section: 4, yechan: 'none', kippeum: 'none', note: '' }
+                ]
+            },
+            {
+                id: 'day3', date: '2026-08-16', title: '8/16(일)', theme: '불 임함',
+                events: [
+                    { id: '3-1', start: '00:00', end: '02:00', title: '중보예배', leader: '김지선', section: 1, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '3-2', start: '02:00', end: '03:00', title: '팀디보', leader: '신희양', section: 1, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '3-3', start: '03:00', end: '05:00', title: 'Harp&Bowl', leader: '레비', section: 1, yechan: 'none', kippeum: 'keyboard', note: '' },
+                    { id: '3-4', start: '05:00', end: '06:00', title: '집회 5', leader: '김수곤 목사', section: 1, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '3-5', start: '06:00', end: '08:00', title: '말씀예배', leader: '황예진', section: 2, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '3-6', start: '08:00', end: '10:00', title: '중보예배', leader: '이보배', section: 2, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '3-7', start: '10:00', end: '11:00', title: '디보션', leader: '김지후', section: 2, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '3-8', start: '11:00', end: '13:00', title: '집회 6', leader: '박호종 목사 (예사연)', section: 2, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '3-9', start: '13:00', end: '14:00', title: '많은 물소리', leader: '전체', section: 3, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '3-10', start: '14:00', end: '16:00', title: '말씀예배', leader: '최지영', section: 3, yechan: 'chat', kippeum: 'none', note: '' },
+                    { id: '3-11', start: '16:00', end: '18:00', title: 'Harp&Bowl', leader: '박소현', section: 3, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '3-12', start: '18:00', end: '19:00', title: '디보션', leader: '원신호', section: 4, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '3-13', start: '19:00', end: '21:00', title: '집회 7', leader: '박한수 목사 (신희양)', section: 4, yechan: 'none', kippeum: 'keyboard', note: '기쁨: 실로암성전 유스집회 (19시~24시)' },
+                    { id: '3-14', start: '21:00', end: '22:00', title: '많은 물소리', leader: '전체', section: 4, yechan: 'none', kippeum: 'keyboard', note: '기쁨: 실로암성전 유스집회' },
+                    { id: '3-15', start: '22:00', end: '24:00', title: '프리스타일', leader: '박진권', section: 4, yechan: 'none', kippeum: 'keyboard', note: '기쁨: 실로암성전 유스집회' }
+                ]
+            },
+            {
+                id: 'day4', date: '2026-08-17', title: '8/17(월)', theme: '승리',
+                events: [
+                    { id: '4-1', start: '00:00', end: '02:00', title: '중보예배', leader: '양산리빙', section: 1, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '4-2', start: '02:00', end: '03:00', title: '팀디보', leader: '이상', section: 1, yechan: 'singer', kippeum: 'keyboard', note: '' },
+                    { id: '4-3', start: '03:00', end: '05:00', title: 'Harp&Bowl', leader: '이현진', section: 1, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '4-4', start: '05:00', end: '06:00', title: '집회 8', leader: '차성헌 목사', section: 1, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '4-5', start: '06:00', end: '08:00', title: '말씀예배', leader: '정예은', section: 2, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '4-6', start: '08:00', end: '10:00', title: '중보예배', leader: '이예은, 한희운', section: 2, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '4-7', start: '10:00', end: '14:00', title: '집회 9', leader: '박진혁 목사 / 박호종 목사', section: 2, yechan: 'none', kippeum: 'none', note: '' },
+                    { id: '4-8', start: '13:00', end: '18:00', title: '정리 및 해산', leader: '전체', section: 3, yechan: 'none', kippeum: 'none', note: '' }
+                ]
+            }
+        ];
+
+        let scheduleData = [];
+        let currentActiveDay = 'day1';
+        let currentFilter = 'all';
+        let currentView = 'card'; // 'card', 'table', 'electives'
+        let mockDateTime = null; 
+        let clockInterval;
+
+        function initApp() {
+            const stored = localStorage.getItem('dt_schedule_v2');
+            if (stored) {
+                scheduleData = JSON.parse(stored);
+            } else {
+                scheduleData = JSON.parse(JSON.stringify(initialSchedule));
+            }
+
+            updateThemeIcon();
+
+            const todayStr = new Date().toISOString().split('T')[0];
+            const foundDay = scheduleData.find(d => d.date === todayStr);
+            if(foundDay) currentActiveDay = foundDay.id;
+
+            renderElectives();
+            switchView('table');
+            updateCurrentStatus();
+            
+            clockInterval = setInterval(updateCurrentStatus, 60000); 
+        }
+
+        function toggleDarkMode() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const icon = document.getElementById('themeToggleIcon');
+            if(icon) {
+                icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon text-slate-600';
+            }
+        }
+
+        function switchView(mode, skipRender = false) {
+            currentView = mode;
+            const containerCard = document.getElementById('scheduleContainer');
+            const containerTable = document.getElementById('tableContainer');
+            const containerElectives = document.getElementById('electivesContainer');
+            
+            const filterBar = document.getElementById('filterBar');
+            const tableLegendContainer = document.getElementById('tableLegendContainer');
+            const dashboardContainer = document.getElementById('dashboardContainer');
+
+            // Reset visibility
+            containerCard.classList.add('hidden');
+            containerTable.classList.add('hidden');
+            containerElectives.classList.add('hidden');
+            
+            if (mode === 'card') {
+                containerCard.classList.remove('hidden');
+                filterBar.classList.remove('hidden');
+                tableLegendContainer.classList.add('hidden');
+                dashboardContainer.classList.remove('hidden');
+                if(!skipRender) renderSchedule();
+            } else if (mode === 'table') {
+                containerTable.classList.remove('hidden');
+                filterBar.classList.add('hidden');
+                tableLegendContainer.classList.remove('hidden');
+                dashboardContainer.classList.remove('hidden');
+                if(!skipRender) renderTable();
+            } else if (mode === 'electives') {
+                containerElectives.classList.remove('hidden');
+                filterBar.classList.add('hidden');
+                tableLegendContainer.classList.add('hidden');
+                // Hide dashboard on electives view to give more space
+                dashboardContainer.classList.add('hidden');
+            }
+            
+            renderTabs();
+        }
+
+        function renderTabs() {
+            const tabsContainer = document.getElementById('dayTabs');
+            tabsContainer.innerHTML = '';
+            
+            const createTabBtn = (text, iconHTML, isActive, onClickFn) => {
+                const btn = document.createElement('button');
+                
+                // Modified spacing and text size to fit 6 buttons on mobile line seamlessly
+                let classes = 'whitespace-nowrap flex-1 px-1 py-1.5 rounded-lg text-[10px] font-bold flex items-center justify-center gap-0.5 transition-colors border ';
+                if (isActive) {
+                    classes += 'bg-slate-800 text-white border-transparent dark:bg-amber-500 dark:text-gray-900 shadow-sm';
+                } else {
+                    classes += 'bg-white text-slate-500 border-slate-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700';
+                }
+                
+                btn.className = classes;
+                btn.innerHTML = `${iconHTML ? iconHTML : ''}<span class="tracking-tighter">${text}</span>`;
+                btn.onclick = onClickFn;
+                return btn;
+            };
+
+            // 1. "전체일정" (Table View) - spacing removed from string to fit beautifully
+            tabsContainer.appendChild(createTabBtn('전체일정', '<i class="fa-solid fa-list-ul text-[9px] mr-0.5"></i>', currentView === 'table', () => switchView('table')));
+            
+            // Separator
+            const sep1 = document.createElement('div');
+            sep1.className = "w-px h-3.5 bg-slate-300 dark:bg-gray-700 shrink-0";
+            tabsContainer.appendChild(sep1);
+
+            // 2. Dates (Card Views)
+            scheduleData.forEach((day, index) => {
+                const isActive = (day.id === currentActiveDay) && (currentView === 'card');
+                tabsContainer.appendChild(createTabBtn(day.title, '', isActive, () => {
+                    currentActiveDay = day.id;
+                    switchView('card');
+                }));
+            });
+
+            // Separator
+            const sep2 = document.createElement('div');
+            sep2.className = "w-px h-3.5 bg-slate-300 dark:bg-gray-700 shrink-0";
+            tabsContainer.appendChild(sep2);
+
+            // 3. "선택강의" (Electives View)
+            tabsContainer.appendChild(createTabBtn('선택강의', '<i class="fa-solid fa-book-open text-[9px] mr-0.5"></i>', currentView === 'electives', () => switchView('electives')));
+        }
+
+        function renderTable() {
+            const container = document.getElementById('tableContainer');
+            let html = '<div class="w-full pb-4 bg-white dark:bg-transparent rounded-xl shadow-sm dark:shadow-none border border-slate-200 dark:border-transparent overflow-hidden"><table class="w-full text-left text-xs whitespace-nowrap border-collapse">';
+            
+            scheduleData.forEach(day => {
+                html += `
+                    <thead>
+                        <tr>
+                            <th colspan="4" class="px-2 py-3 bg-slate-100 dark:bg-gray-800 text-slate-800 dark:text-gray-200 font-bold text-sm border-t border-b border-slate-200 dark:border-gray-700 sticky top-0 z-10">
+                                ${day.title} - ${day.theme}
+                            </th>
+                        </tr>
+                        <tr class="bg-white/90 dark:bg-gray-900/90 text-slate-500 dark:text-gray-400 border-b border-slate-200 dark:border-gray-700 sticky top-[45px] z-10 backdrop-blur-sm">
+                            <th class="px-2 py-2 font-medium w-16">시간</th>
+                            <th class="px-2 py-2 font-medium w-full min-w-[110px]">일정</th>
+                            <th class="px-1 py-2 font-medium text-center w-10 text-lime-600 dark:text-lime-400">예찬</th>
+                            <th class="px-1 py-2 font-medium text-center w-10 text-pink-600 dark:text-pink-400">기쁨</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-gray-800/30 bg-white dark:bg-transparent">
+                `;
+                
+                day.events.forEach(event => {
+                    let rowClass = 'hover:bg-slate-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer border-b border-slate-100 dark:border-gray-800/30';
+                    const hasY = event.yechan !== 'none';
+                    const hasK = event.kippeum !== 'none';
+                    
+                    if (hasY && hasK) rowClass += ' bg-both';
+                    else if (hasY) rowClass += ' bg-yechan';
+                    else if (hasK) rowClass += ' bg-kippeum';
+                    
+                    const yr = roleMap[event.yechan].label;
+                    const kr = roleMap[event.kippeum].label;
+                    
+                    html += `
+                        <tr class="${rowClass}" onclick="openEditModal('${day.id}', '${event.id}')">
+                            <td class="px-2 py-3 font-mono text-[10px] text-slate-500 dark:text-gray-400 align-top leading-tight">
+                                ${event.start}<br><span class="opacity-60">~${event.end}</span>
+                            </td>
+                            <td class="px-2 py-3 whitespace-normal align-top">
+                                <div class="font-bold text-slate-800 dark:text-gray-200 text-[13px] mb-0.5 leading-snug">${event.title}</div>
+                                <div class="text-[10px] text-slate-500 dark:text-gray-500 leading-none">${event.leader}</div>
+                                ${event.note ? `<div class="text-[10px] text-red-500 dark:text-red-400 mt-1.5"><i class="fa-solid fa-circle-exclamation"></i> ${event.note}</div>` : ''}
+                            </td>
+                            <td class="px-1 py-3 text-center align-middle font-bold text-[11px] ${hasY ? 'text-lime-700 dark:text-lime-400' : 'text-slate-300 dark:text-gray-600 font-normal'}">${yr}</td>
+                            <td class="px-1 py-3 text-center align-middle font-bold text-[11px] ${hasK ? 'text-pink-700 dark:text-pink-400' : 'text-slate-300 dark:text-gray-600 font-normal'}">${kr}</td>
+                        </tr>
+                    `;
+                });
+                html += '</tbody>';
+            });
+            html += '</table></div>';
+            html += '<p class="text-center text-[11px] text-slate-400 dark:text-gray-500 pb-8 pt-3"><i class="fa-solid fa-hand-pointer mr-1"></i> 표의 항목을 터치하여 역할을 수정하세요.</p>';
+            container.innerHTML = html;
+        }
+
+        function renderElectives() {
+            const container = document.getElementById('electivesContainer');
+            let html = '<div class="mb-6"><h2 class="text-lg font-extrabold text-slate-800 dark:text-white flex items-center gap-2"><i class="fa-solid fa-book-open text-amber-500"></i> 선택 강의 안내</h2><p class="text-xs text-slate-500 dark:text-gray-400 mt-1">강의 장소: 사랑의집 중앙홀</p></div>';
+            
+            electivesData.forEach(slot => {
+                html += `
+                    <div class="mb-7">
+                        <div class="inline-block px-3 py-1 bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-400 text-xs font-bold rounded-full mb-3 border border-amber-200 dark:border-amber-500/30">
+                            <i class="fa-regular fa-clock mr-1"></i> ${slot.dateStr}
+                        </div>
+                        <div class="flex flex-col gap-3">
+                `;
+                slot.classes.forEach(cls => {
+                    html += `
+                        <div class="p-4 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-gray-700 shadow-sm transition-colors">
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                                <span class="text-[11px] font-bold text-slate-500 dark:text-gray-400">${cls.room}</span>
+                            </div>
+                            <h3 class="text-[15px] font-bold text-slate-900 dark:text-white leading-snug break-keep">${cls.title}</h3>
+                            <div class="text-xs text-slate-600 dark:text-gray-400 mt-2 flex items-center gap-1.5">
+                                <i class="fa-solid fa-microphone-lines opacity-60"></i> ${cls.speaker}
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            
+            const activeClasses = ['bg-slate-800', 'text-white', 'dark:bg-amber-600', 'dark:text-gray-900', 'shadow-md', 'border-transparent'];
+            const inactiveClasses = ['bg-white', 'text-slate-600', 'border-slate-200', 'border', 'dark:bg-gray-800', 'dark:text-gray-400', 'dark:border-gray-700'];
+
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove(...activeClasses, ...inactiveClasses);
+                if(btn.id === `filter-${filter}`) {
+                    btn.classList.add(...activeClasses);
+                } else {
+                    btn.classList.add(...inactiveClasses);
+                }
+            });
+            renderSchedule();
+        }
+
+        function getSectionTitle(sec) {
+            switch(sec) {
+                case 1: return "심야 ~ 새벽 (00:00 - 06:00)";
+                case 2: return "오전 (06:00 - 12:00)";
+                case 3: return "오후 (12:00 - 18:00)";
+                case 4: return "저녁 ~ 심야 (18:00 - 24:00)";
+                default: return "일정";
+            }
+        }
+
+        function renderSchedule() {
+            const container = document.getElementById('scheduleContainer');
+            container.innerHTML = '';
+            
+            const activeDayData = scheduleData.find(d => d.id === currentActiveDay);
+            if (!activeDayData) return;
+
+            const sections = { 1: [], 2: [], 3: [], 4: [] };
+            activeDayData.events.forEach(event => {
+                let show = false;
+                if (currentFilter === 'all') show = true;
+                else if (currentFilter === 'yechan' && event.yechan !== 'none') show = true;
+                else if (currentFilter === 'kippeum' && event.kippeum !== 'none') show = true;
+                else if (currentFilter === 'together' && event.yechan !== 'none' && event.kippeum !== 'none') show = true;
+                if (show && sections[event.section]) sections[event.section].push(event);
+            });
+
+            [1, 2, 3, 4].forEach(secNum => {
+                const secEvents = sections[secNum];
+                if (secEvents && secEvents.length > 0) {
+                    const secWrapper = document.createElement('div');
+                    secWrapper.className = 'mb-8';
+                    
+                    secWrapper.innerHTML = `
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="h-px bg-slate-200 dark:bg-gray-700 flex-1"></div>
+                            <span class="text-[11px] font-bold text-slate-400 dark:text-gray-500 tracking-wider">${getSectionTitle(secNum)}</span>
+                            <div class="h-px bg-slate-200 dark:bg-gray-700 flex-1"></div>
+                        </div>
+                        <div class="flex flex-col gap-3" id="sec-cards-${secNum}"></div>
+                    `;
+                    container.appendChild(secWrapper);
+                    const cardsContainer = secWrapper.querySelector(`#sec-cards-${secNum}`);
+
+                    secEvents.forEach(event => {
+                        const card = document.createElement('div');
+                        const hasRole = event.yechan !== 'none' || event.kippeum !== 'none';
+                        
+                        let baseCardClass = "rounded-xl p-4 flex flex-col cursor-pointer border transition-colors shadow-sm dark:shadow-none bg-white dark:bg-slate-800/80 ";
+                        if(hasRole) {
+                            baseCardClass += "border-amber-200 dark:border-amber-500/30";
+                        } else {
+                            baseCardClass += "border-slate-200 dark:border-transparent";
+                        }
+                        
+                        card.className = baseCardClass;
+                        card.onclick = () => openEditModal(activeDayData.id, event.id);
+                        
+                        let badgesHTML = '';
+                        if (event.yechan !== 'none') {
+                            badgesHTML += `<span class="text-[10px] px-2 py-0.5 rounded-md font-bold bg-lime-100 text-lime-700 border border-lime-200 dark:bg-lime-900/30 dark:text-lime-400 dark:border-lime-800/50">예찬: ${roleMap[event.yechan].label}</span>`;
+                        }
+                        if (event.kippeum !== 'none') {
+                            badgesHTML += `<span class="text-[10px] px-2 py-0.5 rounded-md font-bold bg-pink-100 text-pink-700 border border-pink-200 dark:bg-pink-900/30 dark:text-pink-400 dark:border-pink-800/50">기쁨: ${roleMap[event.kippeum].label}</span>`;
+                        }
+
+                        let specialNoteHTML = '';
+                        if (event.note) {
+                            specialNoteHTML = `<div class="mt-2 text-[11px] text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20 px-2 py-1 rounded w-fit"><i class="fa-solid fa-circle-exclamation mr-1"></i>${event.note}</div>`;
+                        }
+
+                        card.innerHTML = `
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[11px] font-mono font-bold text-slate-500 bg-slate-100 dark:text-gray-300 dark:bg-gray-700/50 px-2 py-0.5 rounded">${event.start} - ${event.end}</span>
+                                <button class="text-slate-400 hover:text-amber-500 dark:text-gray-500 dark:hover:text-amber-400 transition-colors"><i class="fa-solid fa-pen-to-square"></i></button>
+                            </div>
+                            <div class="flex justify-between items-end mt-1">
+                                <div>
+                                    <h3 class="text-[16px] font-bold text-slate-900 dark:text-white leading-tight break-keep">${event.title}</h3>
+                                    <p class="text-[11px] text-slate-500 dark:text-gray-400 mt-1">${event.leader}</p>
+                                </div>
+                                <div class="flex flex-col gap-1.5 items-end shrink-0 ml-2">
+                                    ${badgesHTML}
+                                </div>
+                            </div>
+                            ${specialNoteHTML}
+                        `;
+                        cardsContainer.appendChild(card);
+                    });
+                }
+            });
+
+            if (container.innerHTML === '') {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-slate-400 dark:text-gray-500 flex flex-col items-center">
+                        <i class="fa-solid fa-mug-hot text-3xl mb-3 text-slate-300 dark:text-gray-600"></i>
+                        <p class="font-bold">일정이 없습니다</p>
+                        <p class="text-xs mt-1">이 시간에는 푹 쉬며 충전하세요!</p>
+                    </div>
+                `;
+            }
+        }
+
+        function getRealTime() {
+            if (mockDateTime) return new Date(mockDateTime);
+            return new Date();
+        }
+
+        function parseEventTime(dateStr, timeStr) {
+            let t = timeStr === '24:00' ? '23:59:59' : timeStr + ':00';
+            return new Date(`${dateStr}T${t}`);
+        }
+
+        function updateCurrentStatus() {
+            const now = getRealTime();
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const date = now.getDate().toString().padStart(2, '0');
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('dashCurrentTime').textContent = `${month}/${date} ${hours}:${minutes}`;
+
+            let currentEvent = null;
+            let nextEvent = null;
+
+            for (let i = 0; i < scheduleData.length; i++) {
+                const day = scheduleData[i];
+                for (let j = 0; j < day.events.length; j++) {
+                    const ev = day.events[j];
+                    const startT = parseEventTime(day.date, ev.start);
+                    const endT = parseEventTime(day.date, ev.end);
+
+                    if (now >= startT && now < endT) {
+                        currentEvent = ev;
+                        if (j + 1 < day.events.length) nextEvent = day.events[j+1];
+                        else if (i + 1 < scheduleData.length) nextEvent = scheduleData[i+1].events[0];
+                        break;
+                    } else if (now < startT && !currentEvent && !nextEvent) {
+                        nextEvent = ev;
+                        break;
+                    }
+                }
+                if (currentEvent) break;
+            }
+
+            const ctxEl = document.getElementById('dashTimeContext');
+            const pingEl = document.getElementById('dashPingIndicator');
+            const titleEl = document.getElementById('dashEventTitle');
+            const leaderEl = document.getElementById('dashEventLeader');
+            
+            const yechanEl = document.getElementById('dashYechanRole');
+            const kippeumEl = document.getElementById('dashKippeumRole');
+            const yechanBox = yechanEl.parentElement;
+            const kippeumBox = kippeumEl.parentElement;
+
+            if (currentEvent) {
+                ctxEl.textContent = "현재 진행중";
+                ctxEl.className = "text-[11px] font-bold text-amber-600 dark:text-amber-400";
+                pingEl.style.display = 'flex';
+                
+                titleEl.textContent = currentEvent.title;
+                leaderEl.textContent = `${currentEvent.start} - ${currentEvent.end} | ${currentEvent.leader}`;
+                
+                const hasY = currentEvent.yechan !== 'none';
+                yechanEl.textContent = roleMap[currentEvent.yechan].label;
+                yechanEl.className = `text-[11px] font-bold ${hasY ? 'text-lime-700 dark:text-lime-400' : 'text-slate-400 dark:text-gray-500'}`;
+                yechanBox.className = `rounded-lg py-1 px-1 flex flex-col justify-center items-center border transition-colors ${hasY ? 'border-lime-200 bg-lime-50 dark:border-lime-900/50 dark:bg-lime-900/20' : 'border-slate-200 bg-slate-50 dark:border-gray-700 dark:bg-black/30'}`;
+
+                const hasK = currentEvent.kippeum !== 'none';
+                kippeumEl.textContent = roleMap[currentEvent.kippeum].label;
+                kippeumEl.className = `text-[11px] font-bold ${hasK ? 'text-pink-700 dark:text-pink-400' : 'text-slate-400 dark:text-gray-500'}`;
+                kippeumBox.className = `rounded-lg py-1 px-1 flex flex-col justify-center items-center border transition-colors ${hasK ? 'border-pink-200 bg-pink-50 dark:border-pink-900/50 dark:bg-pink-900/20' : 'border-slate-200 bg-slate-50 dark:border-gray-700 dark:bg-black/30'}`;
+            } else if (nextEvent) {
+                ctxEl.textContent = "대기중 (행사 전/휴식)";
+                ctxEl.className = "text-[11px] font-bold text-slate-500 dark:text-gray-400";
+                pingEl.style.display = 'none';
+                titleEl.textContent = "자유 시간 / 휴식";
+                leaderEl.textContent = "충전의 시간을 가지세요!";
+                
+                yechanEl.textContent = "-"; yechanEl.className = "text-[11px] font-bold text-slate-400 dark:text-gray-500";
+                kippeumEl.textContent = "-"; kippeumEl.className = "text-[11px] font-bold text-slate-400 dark:text-gray-500";
+                yechanBox.className = kippeumBox.className = "rounded-lg py-1 px-1 flex flex-col justify-center items-center border border-slate-200 bg-slate-50 dark:border-gray-700 dark:bg-black/30 transition-colors";
+            } else {
+                ctxEl.textContent = "행사 종료";
+                ctxEl.className = "text-[11px] font-bold text-slate-500 dark:text-gray-400";
+                pingEl.style.display = 'none';
+                titleEl.textContent = "모든 일정이 종료되었습니다";
+                leaderEl.textContent = "수고하셨습니다!";
+                yechanEl.textContent = "-"; kippeumEl.textContent = "-";
+                yechanEl.className = kippeumEl.className = "text-[11px] font-bold text-slate-400 dark:text-gray-500";
+                yechanBox.className = kippeumBox.className = "rounded-lg py-1 px-1 flex flex-col justify-center items-center border border-slate-200 bg-slate-50 dark:border-gray-700 dark:bg-black/30 transition-colors";
+            }
+
+            const nextEventEl = document.getElementById('dashNextEvent');
+            const nextTimeEl = document.getElementById('dashNextTime');
+            if (nextEvent) {
+                nextEventEl.textContent = `${nextEvent.title} (${nextEvent.leader})`;
+                nextTimeEl.textContent = nextEvent.start;
+            } else {
+                nextEventEl.textContent = "다음 일정이 없습니다.";
+                nextTimeEl.textContent = "-";
+            }
+        }
+
+        function openEditModal(dayId, eventId) {
+            const day = scheduleData.find(d => d.id === dayId);
+            const ev = day.events.find(e => e.id === eventId);
+            
+            document.getElementById('modalEventTitle').textContent = ev.title;
+            document.getElementById('modalEventTime').textContent = `${ev.start} ~ ${ev.end}`;
+            document.getElementById('modalDayId').value = dayId;
+            document.getElementById('modalEventId').value = eventId;
+            
+            document.querySelector(`input[name="yechanRole"][value="${ev.yechan}"]`).checked = true;
+            document.querySelector(`input[name="kippeumRole"][value="${ev.kippeum}"]`).checked = true;
+            
+            const modal = document.getElementById('editModal');
+            const content = document.getElementById('editModalContent');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('editModal');
+            const content = document.getElementById('editModalContent');
+            modal.classList.add('opacity-0');
+            content.classList.add('translate-y-full');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function openBibleModal() {
+            const modal = document.getElementById('bibleModal');
+            const content = document.getElementById('bibleModalContent');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeBibleModal() {
+            const modal = document.getElementById('bibleModal');
+            const content = document.getElementById('bibleModalContent');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function saveAssignment() {
+            const dayId = document.getElementById('modalDayId').value;
+            const eventId = document.getElementById('modalEventId').value;
+            const yRole = document.querySelector('input[name="yechanRole"]:checked').value;
+            const kRole = document.querySelector('input[name="kippeumRole"]:checked').value;
+            
+            const dayIdx = scheduleData.findIndex(d => d.id === dayId);
+            const evIdx = scheduleData[dayIdx].events.findIndex(e => e.id === eventId);
+            
+            scheduleData[dayIdx].events[evIdx].yechan = yRole;
+            scheduleData[dayIdx].events[evIdx].kippeum = kRole;
+            
+            localStorage.setItem('dt_schedule_v2', JSON.stringify(scheduleData));
+            
+            closeModal();
+            if (currentView === 'card') renderSchedule();
+            else if (currentView === 'table') renderTable();
+            updateCurrentStatus();
+        }
+
+        function toggleSimulator() {
+            const panel = document.getElementById('simulatorPanel');
+            panel.classList.toggle('hidden');
+            panel.classList.toggle('flex');
+        }
+
+        function setMockTime(isoString) {
+            mockDateTime = isoString;
+            updateCurrentStatus();
+            if (isoString && (currentView === 'card' || currentView === 'table')) {
+                const d = new Date(isoString);
+                const todayStr = d.toISOString().split('T')[0];
+                const foundDay = scheduleData.find(day => day.date === todayStr);
+                if(foundDay && foundDay.id !== currentActiveDay && currentView === 'card') {
+                    currentActiveDay = foundDay.id;
+                    switchView('card');
+                }
+            }
+        }
+
+        // Run Init
+        window.addEventListener('DOMContentLoaded', () => {
+            // Setup initial filter button styling correctly based on mode
+            setFilter('all');
+            initApp();
+        });
+
+    </script>
+</body>
+</html>
